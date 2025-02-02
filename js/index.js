@@ -1,24 +1,52 @@
-// Задача:
-// код ниже должен отобразить на canvas 2 танка (можно черными квадратами)
+const factory = new Factory();
+const Man = factory.getClass([
+  'physic',
+  'sprite',
+  'coordinates',
+  'size',
+  'inertia',
+], [], './images/mario.png');
+const Grow = factory.getClass([
+  'physic',
+  'sprite',
+  'coordinates',
+  'size',
 
+], [], './images/grow.png');
+const man = new Man();
+const man2 = new Man();
 const scene = new Scene();
+man2.coordinates.x= 300;
+
+for (let i = 0; i < 10; i++) {
+  const block = new Grow();
+  block.coordinates.y = 100;
+  block.coordinates.x = i * 50;
+  scene.add(block);
+}
+
+
+scene.add(man);
+scene.add(man2);
+setTimeout(() => {
+  scene.remove(man2.id);
+}, 5000);
+
 const camera = new Camera();
-const display = new Display('my_canvas');
+camera.bind(man);
+camera.bind(scene);
 
-camera.bind(scene); // камера должна смотреть на эту сцену
-camera.resolution = [ 1000, 1000 ]; // область захвата камеры;
-panzerB.x = 500; // позиция камеры
-panzerB.y = 500; // позиция камеры
-display.bind(camera); // display выводит обьекты захваченные камерой в #my_canvas
+const display = new Display('canvas');
+display.bind(camera);
 
-const panzerA = Factory.create('panzer'); // получили типовой обьект класса Танк
-panzerA.x = 100; // позиция танка
-panzerA.y = 100;
+const joystick = new Joystick();
+joystick.bind(man);
 
-const panzerB = Factory.create('panzer'); // получили типовой обьект класса Танк
-panzerB.x = 400; // позиция танка
-panzerB.y = 400;
+const physic = new Physic();
 
 
-scene.add(panzerA);
-scene.add(panzerB);
+const timer = setInterval(() => {
+  physic.update(scene, 1000 / 60); //
+  display.render();
+}, 1000 / 60);
+
